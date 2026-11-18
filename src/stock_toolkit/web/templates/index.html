@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>A 股筛选器 · 回测</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header>
+    <h1>A 股筛选器</h1>
+    <p class="muted">数据：东财掘金 <code>gm</code> · 配置 <code>GM_TOKEN</code>；Ubuntu 远程开发时另设 <code>GM_SERV_ADDR=内网IP:7001</code></p>
+  </header>
+
+  <main class="grid">
+    <section class="card">
+      <h2>条件筛选</h2>
+      <label>配置文件
+        <select id="screen-config">
+          {% for c in configs %}
+          <option value="{{ c }}" {% if c == default_screen %}selected{% endif %}>{{ c }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <button id="btn-screen" type="button">运行筛选</button>
+      <pre id="screen-out" class="out"></pre>
+      <div id="screen-table"></div>
+    </section>
+
+    <section class="card card-wide">
+      <h2>单股 SKDJ 回测</h2>
+      <p class="muted small">手续费万分之 1.5；买入：K、D 均低于阈值且 |K−D| 趋近目标；卖出：买入后首次同时满足 KD 容差 &lt; 设定值 且 K &lt; D。</p>
+      <div class="form-grid">
+        <label>股票代码 <input id="sk-symbol" type="text" value="600000" placeholder="600000 或 SHSE.600000" /></label>
+        <label>开始 <input id="sk-start" type="date" value="2023-01-01" /></label>
+        <label>结束 <input id="sk-end" type="date" value="2025-12-31" /></label>
+        <label>初始资金 <input id="sk-cash" type="number" value="100000" step="1000" /></label>
+        <label>SKDJ N <input id="sk-n" type="number" value="9" min="1" /></label>
+        <label>平滑 M1 <input id="sk-m1" type="number" value="3" min="1" /></label>
+        <label>平滑 M2 <input id="sk-m2" type="number" value="3" min="1" /></label>
+        <label>买入 K 上限 <input id="sk-buy-k" type="number" value="20" step="0.1" /></label>
+        <label>买入 D 上限 <input id="sk-buy-d" type="number" value="20" step="0.1" /></label>
+        <label>买入 |K−D| 目标 <input id="sk-buy-diff-t" type="number" value="0" step="0.1" /></label>
+        <label>买入 |K−D| 容差 <input id="sk-buy-diff-tol" type="number" value="2" step="0.1" /></label>
+        <label>卖出 KD 容差上限 <input id="sk-sell-kd-tol" type="number" value="3" step="0.1" title="|K−D| 小于该值且 K&lt;D 时卖出" /></label>
+      </div>
+      <button id="btn-skdj" type="button">执行 SKDJ 回测</button>
+      <pre id="skdj-summary" class="out"></pre>
+      <div id="skdj-chart" class="chart-box"></div>
+      <div id="skdj-trades"></div>
+    </section>
+
+    <section class="card">
+      <h2>组合回测</h2>
+      <label>回测配置
+        <select id="bt-config">
+          {% for c in configs %}
+          <option value="{{ c }}" {% if c == default_backtest %}selected{% endif %}>{{ c }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <button id="btn-backtest" type="button">运行回测</button>
+      <pre id="bt-stats" class="out"></pre>
+      <canvas id="equity-chart" width="640" height="220"></canvas>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+name: 沪深300低PE月度轮动
+
+screen: configs/default_screen.yaml
+
+backtest:
+  start: "2022-01-01"
+  end: "2024-12-31"
+  initial_cash: 1000000
+  top_n: 10
+  rebalance: 1M
+  commission: 0.0003
+  slippage: 0.0001
